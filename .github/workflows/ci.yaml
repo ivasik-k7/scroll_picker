@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.7.10"
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Create artifacts/test-reports directory
+        run: mkdir -p artifacts/test-reports
+
+      - name: Run tests
+        run: flutter test > artifacts/test-reports/test-result.txt
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-results
+          path: artifacts/test-reports
